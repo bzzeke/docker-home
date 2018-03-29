@@ -1,0 +1,43 @@
+version: '3'
+services:
+    rsyslog:
+        build:
+            context: ./rsyslog
+        network_mode: host
+        ports:
+            - "514:514"
+        volumes:
+            - ./rsyslog/app:/app
+        env_file: .env
+
+    mail2url:
+        build:
+            context: ./mail2url
+        network_mode: host
+        ports:
+            - "25:25"
+        volumes:
+            - ./mail2url/app:/app
+        env_file: .env
+
+    homebridge:
+        build:
+            context: ./homebridge
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./homebridge/app:/app
+        env_file: .env
+
+    homekit2mqtt:
+        build:
+            context: ./homekit2mqtt
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./homekit2mqtt/app:/app
+        env_file: .env
