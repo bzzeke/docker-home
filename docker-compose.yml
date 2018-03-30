@@ -41,3 +41,16 @@ services:
         volumes:
             - ./homekit2mqtt/app:/app
         env_file: .env
+
+    bot:
+        build:
+            context: ./bot
+        network_mode: host
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./bot/app:/app
+            - ./bot/certs/ssl:/etc/ssl/acme
+            - ./bot/certs/acme:/etc/acme
+        env_file: .env
