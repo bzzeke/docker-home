@@ -10,3 +10,7 @@
 [submodule "homebridge"]
 	path = homebridge
 	url = git@github.com:bzzeke/docker-homebridge.git
+[submodule "bot"]
+	path = bot
+	url = git@github.com:bzzeke/docker-web.git
+
