@@ -1,56 +1,61 @@
 version: '3'
+networks:
+    service:
 services:
     rsyslog:
         build:
-            context: ./rsyslog
-        network_mode: host
+            context: ./docker-rsyslog
+        networks:
+            - service
         ports:
             - "514:514"
         volumes:
-            - ./rsyslog/app:/app
+            - ./docker-rsyslog/app:/app
         env_file: .env
 
     mail2url:
         build:
-            context: ./mail2url
-        network_mode: host
+            context: ./docker-mail2url
+        networks:
+            - service
         ports:
             - "25:25"
         volumes:
-            - ./mail2url/app:/app
+            - ./docker-mail2url/app:/app
         env_file: .env
 
-    homebridge:
+    web:
         build:
-            context: ./homebridge
-        network_mode: host
-        ports:
-            - "5353:5353"
-            - "51827:51827"
-        volumes:
-            - ./homebridge/app:/app
-        env_file: .env
-
-    homekit2mqtt:
-        build:
-            context: ./homekit2mqtt
-        network_mode: host
-        ports:
-            - "5353:5353"
-            - "51827:51827"
-        volumes:
-            - ./homekit2mqtt/app:/app
-        env_file: .env
-
-    bot:
-        build:
-            context: ./bot
-            network_mode: host
+            context: ./docker-web
+        networks:
+            - service
         ports:
             - "80:80"
             - "443:443"
         volumes:
-            - ./bot/app:/app
-            - ./bot/certs/ssl:/etc/ssl/acme
-            - ./bot/certs/acme:/etc/acme
+            - ./docker-web/app:/app
+            - ./docker-web/certs/ssl:/etc/ssl/acme
+            - ./docker-web/certs/acme:/etc/acme
+        env_file: .env
+
+    homebridge:
+        build:
+            context: ./docker-homebridge
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./docker-homebridge/app:/app
+        env_file: .env
+
+    homekit2mqtt:
+        build:
+            context: ./docker-homekit2mqtt
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./docker-homekit2mqtt/app:/app
         env_file: .env
