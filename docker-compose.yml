@@ -12,6 +12,7 @@ services:
         volumes:
             - ./docker-rsyslog/app:/app
         env_file: .env
+        restart: always
 
     mail2url:
         build:
@@ -23,6 +24,7 @@ services:
         volumes:
             - ./docker-mail2url/app:/app
         env_file: .env
+        restart: always
 
     web:
         build:
@@ -37,6 +39,7 @@ services:
             - ./docker-web/certs/ssl:/etc/ssl/acme
             - ./docker-web/certs/acme:/etc/acme
         env_file: .env
+        restart: always
 
     homebridge:
         build:
@@ -48,6 +51,7 @@ services:
         volumes:
             - ./docker-homebridge/app:/app
         env_file: .env
+        restart: always
 
     homekit2mqtt:
         build:
@@ -59,3 +63,4 @@ services:
         volumes:
             - ./docker-homekit2mqtt/app:/app
         env_file: .env
+        restart: always
