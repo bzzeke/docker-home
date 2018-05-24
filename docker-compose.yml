@@ -1,6 +1,8 @@
 version: '3'
 networks:
     service:
+    secured:
+
 services:
     rsyslog:
         build:
@@ -29,8 +31,7 @@ services:
     web:
         build:
             context: ./docker-web
-        networks:
-            - service
+        network_mode: host
         ports:
             - "80:80"
             - "443:443"
@@ -62,5 +63,26 @@ services:
             - "51827:51827"
         volumes:
             - ./docker-homekit2mqtt/app:/app
+        env_file: .env
+        restart: always
+
+    vpn:
+        build:
+            context: ./docker-vpn
+        network_mode: host
+        cap_add:
+            - NET_ADMIN
+        privileged: true
+        volumes:
+            - ./docker-vpn/app:/app
+        env_file: .env
+        restart: always
+
+    socks:
+        image: "xkuma/socks5"
+        networks:
+            - secured
+        ports:
+            - "1080:1080"
         env_file: .env
         restart: always
