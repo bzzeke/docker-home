@@ -14,6 +14,7 @@ services:
         volumes:
             - ./docker-rsyslog/app:/app
         env_file: .env
+        hostname: rsyslog
         restart: always
 
     mail2url:
@@ -26,12 +27,14 @@ services:
         volumes:
             - ./docker-mail2url/app:/app
         env_file: .env
+        hostname: mail2url
         restart: always
 
     web:
         build:
             context: ./docker-web
-        network_mode: host
+        networks:
+            - service
         ports:
             - "80:80"
             - "443:443"
@@ -40,6 +43,7 @@ services:
             - ./docker-web/certs/ssl:/etc/ssl/acme
             - ./docker-web/certs/acme:/etc/acme
         env_file: .env
+        hostname: web
         restart: always
 
     homebridge:
@@ -85,4 +89,5 @@ services:
         ports:
             - "1080:1080"
         env_file: .env
+        hostname: socks
         restart: always
