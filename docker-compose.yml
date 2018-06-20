@@ -10,7 +10,8 @@ services:
         networks:
             - service
         ports:
-            - "514:514"
+            - "514:514/udp"
+            - "514:514/tcp"
         volumes:
             - ./docker-rsyslog/app:/app
         env_file: .env
