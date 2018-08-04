@@ -88,7 +88,20 @@ services:
         networks:
             - secured
         ports:
-            - "1080:1080"
+            - "1080:1080" 
+
+    unifi:
+        build:
+            context: ./docker-unifi
+        network_mode: bridge
+        ports:
+            - "8080:8080"
+            - "8443:8443"
+            - "8843:8843"
+            - "8880:8880"
+        volumes:
+            - ./docker-unifi/app:/app
+            - ./docker-unifi/lib:/var/lib/unifi
         env_file: .env
-        hostname: socks
-        restart: always
+        hostname: unifi
+        restart: always         

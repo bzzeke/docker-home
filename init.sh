@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repos=(docker-web docker-homebridge docker-homekit2mqtt docker-mail2url docker-rsyslog docker-vpn)
+repos=(docker-web docker-homebridge docker-homekit2mqtt docker-mail2url docker-rsyslog docker-vpn docker-unifi)
 use_key=0
 
 function init {
