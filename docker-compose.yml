@@ -88,21 +88,31 @@ services:
         networks:
             - secured
         ports:
-            - "1080:1080" 
+            - "1080:1080"
 
     unifi:
-        image: "ctindel/unifi-controller"
+        image: "jacobalberty/unifi"
         ports:
             - "3478:3478/udp"
             - "10001:10001/udp"
             - "8080:8080"
-            - "8081:8081"
             - "8443:8443"
-            - "8843:8843"
-            - "8880:8880"
-            - "6789:6789"
         volumes:
-            - ./docker-unifi/lib:/var/lib/unifi
+            - ./docker-unifi:/unifi
         env_file: .env
         hostname: unifi
-        restart: always         
+        restart: always
+
+    tig:
+        build:
+            context: ./docker-tig
+        network_mode: host
+        ports:
+            - "3000:3000"
+            - "8083:8083"
+            - "8086:8086"
+            - "8125:8125/udp"
+        volumes:
+            - ./docker-tig/data/influxdb:/var/lib/influxdb
+        env_file: .env
+        restart: always
