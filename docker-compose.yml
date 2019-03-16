@@ -89,6 +89,33 @@ services:
             - secured
         ports:
             - "1080:1080"
+
+    unifi:
+        image: "jacobalberty/unifi"
+        ports:
+            - "3478:3478/udp"
+            - "10001:10001/udp"
+            - "8080:8080"
+            - "8443:8443"
+        volumes:
+            - ./docker-unifi:/unifi
         env_file: .env
-        hostname: socks
+        hostname: unifi
+        restart: always
+
+    tig:
+        build:
+            context: ./docker-tig
+        network_mode: host
+        ports:
+            - "3000:3000"
+            - "8083:8083"
+            - "8086:8086"
+            - "8125:8125/udp"
+        volumes:
+            - ./docker-tig/app:/app
+            - ./docker-tig/data/influxdb:/var/lib/influxdb
+            - ./docker-tig/data/grafana/data:/grafana/data
+            - ./docker-tig/data/grafana/logs:/grafana/logs
+        env_file: .env
         restart: always
