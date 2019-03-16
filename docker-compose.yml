@@ -41,8 +41,8 @@ services:
             - "443:443"
         volumes:
             - ./docker-web/app:/app
-            - ./docker-web/certs/ssl:/etc/ssl/acme
             - ./docker-web/certs/acme:/etc/acme
+            - ./docker-web/certs/ssl/acme:/etc/ssl/acme
         env_file: .env
         hostname: web
         restart: always
