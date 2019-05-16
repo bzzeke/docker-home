@@ -41,8 +41,7 @@ services:
             - "443:443"
         volumes:
             - ./docker-web/app:/app
-            - ./docker-web/certs/acme:/etc/acme
-            - ./docker-web/certs/ssl/acme:/etc/ssl/acme
+            - ./docker-le:/etc/ssl/le
         env_file: .env
         hostname: web
         restart: always
@@ -117,5 +116,22 @@ services:
             - ./docker-tig/data/influxdb:/var/lib/influxdb
             - ./docker-tig/data/grafana/data:/grafana/data
             - ./docker-tig/data/grafana/logs:/grafana/logs
+        env_file: .env
+        restart: always
+
+
+    le:
+        image: "adferrand/letsencrypt-dns"
+        volumes:
+            - ./docker-le:/etc/letsencrypt
+        env_file: .env
+
+    asterisk:
+        build:
+            context: ./docker-asterisk
+        network_mode: host
+        privileged: true
+        volumes:
+            - ./docker-asterisk/app:/app
         env_file: .env
         restart: always
