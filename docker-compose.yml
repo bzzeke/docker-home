@@ -42,6 +42,8 @@ services:
         volumes:
             - ./docker-web/app:/app
             - ./docker-le:/etc/ssl/le
+        depends_on:
+            - le
         env_file: .env
         hostname: web
         restart: always
