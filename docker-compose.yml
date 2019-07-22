@@ -39,6 +39,7 @@ services:
         ports:
             - "80:80"
             - "443:443"
+            - "25:25"
         volumes:
             - ./docker-web/app:/app
             - ./docker-le:/etc/ssl/le
