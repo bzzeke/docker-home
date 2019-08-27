@@ -1,0 +1,101 @@
+version: '3'
+networks:
+    service:
+    secured:
+
+services:
+    homebridge:
+        build:
+            context: ./docker-homebridge
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./docker-homebridge/app:/app
+        env_file: .env
+        restart: always
+
+    homekit2mqtt:
+        build:
+            context: ./docker-homekit2mqtt
+        network_mode: host
+        ports:
+            - "5353:5353"
+            - "51827:51827"
+        volumes:
+            - ./docker-homekit2mqtt/app:/app
+        env_file: .env
+        restart: always
+
+    unifi:
+        image: "jacobalberty/unifi"
+        ports:
+            - "3478:3478/udp"
+            - "10001:10001/udp"
+            - "8080:8080"
+            - "8443:8443"
+        volumes:
+            - ./docker-unifi:/unifi
+        env_file: .env
+        hostname: unifi
+        restart: always
+
+    tig:
+        build:
+            context: ./docker-tig
+        network_mode: host
+        ports:
+            - "3000:3000"
+            - "8083:8083"
+            - "8086:8086"
+            - "8125:8125/udp"
+        volumes:
+            - ./docker-tig/app:/app
+            - /mnt/md0/system/tig/influxdb:/var/lib/influxdb
+            - /mnt/md0/system/tig/grafana/data:/grafana/data
+            - /mnt/md0/system/tig/grafana/logs:/grafana/logs
+        env_file: .env
+        restart: always
+
+    storage:
+        build:
+            context: ./docker-storage
+            args:
+                - STORAGE_UID=${STORAGE_UID}
+                - STORAGE_GID=${STORAGE_GID}
+                - STORAGE_USER=${STORAGE_USER}
+                - STORAGE_PASSWORD=${STORAGE_PASSWORD}
+
+        network_mode: host
+        volumes:
+            - /mnt/md0:/srv/Yandex.Disk
+        env_file: .env
+        restart: always
+
+    camera:
+        build:
+            context: ./docker-camera
+        network_mode: host
+        volumes:
+            - ./docker-camera/app:/app
+        env_file: .env
+        restart: always
+
+    nfs:
+        build:
+            context: ./docker-nfs
+            args:
+                - STORAGE_UID=${STORAGE_UID}
+                - STORAGE_GID=${STORAGE_GID}
+                - STORAGE_USER=${STORAGE_USER}
+                - STORAGE_PASSWORD=${STORAGE_PASSWORD}
+        volumes:
+            - /mnt/md0:/srv/Yandex.Disk
+        security_opt:
+            - apparmor:unconfined
+            - seccomp:unconfined
+        network_mode: host
+        privileged: true
+        env_file: .env
+        restart: always

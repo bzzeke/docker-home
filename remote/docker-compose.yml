@@ -1,0 +1,79 @@
+version: '3'
+networks:
+    service:
+    secured:
+
+services:
+
+    logspout:
+        image: gliderlabs/logspout
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        command:
+            syslog+tcp://${LOG_SERVER}:514
+        restart: always
+
+    rsyslog:
+        build:
+            context: ./docker-rsyslog
+        networks:
+            - service
+        ports:
+            - "514:514/udp"
+            - "514:514/tcp"
+        volumes:
+            - ./docker-rsyslog/app:/app
+        env_file: .env
+        environment:
+            - LOGSPOUT=ignore
+        hostname: rsyslog
+        restart: always
+        depends_on:
+            - logspout
+
+    bot:
+        build:
+            context: ./docker-bot
+        networks:
+            - service
+        ports:
+            - "80:80"
+            - "443:443"
+            - "25:25"
+        volumes:
+            - ./docker-bot/app:/app
+            - ./docker-le:/etc/ssl/le
+        depends_on:
+            - le
+        env_file: .env
+        hostname: bot
+        restart: always
+
+    vpn:
+        build:
+            context: ./docker-vpn
+        network_mode: host
+        cap_add:
+            - NET_ADMIN
+        privileged: true
+        volumes:
+            - ./docker-vpn/app:/app
+        env_file: .env
+        environment:
+            - LOGSPOUT=ignore
+        restart: always
+
+    socks:
+        image: "xkuma/socks5"
+        networks:
+            - secured
+        ports:
+            - "1080:1080"
+        environment:
+            - LOGSPOUT=ignore
+
+    le:
+        image: "adferrand/letsencrypt-dns"
+        volumes:
+            - ./docker-le:/etc/letsencrypt
+        env_file: .env
