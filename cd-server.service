@@ -1,0 +1,13 @@
+[Unit]
+Description=CD server
+After=network.target
+
+[Service]
+User=zeke
+Type=simple
+WorkingDirectory=/srv/docker-home
+ExecStart=/srv/docker-home/cd-server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
