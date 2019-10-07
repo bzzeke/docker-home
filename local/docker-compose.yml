@@ -44,6 +44,10 @@ services:
     tig:
         build:
             context: ./docker-tig
+            args:
+                - STORAGE_UID=${STORAGE_UID}
+                - STORAGE_GID=${STORAGE_GID}
+
         network_mode: host
         ports:
             - "3000:3000"
